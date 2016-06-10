@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 """
 EasyBuild support for MAKER, implemented as an easyblock
 
-@author: Bob Droege (University of Groningen)
+@author: Bob Dröge (University of Groningen)
 """
 import os
 import shutil
@@ -12,12 +13,9 @@ from easybuild.tools.run import run_cmd
 
 class EB_MAKER(Tarball, Bundle):
     """
-    TODO:doc
+    Support for building MAKER
     """
 
-    def __init__(self, *args, **kwargs):
-        super(EB_MAKER, self).__init__(*args, **kwargs)
-    
     def post_install_step(self):
 
         # load fake module
