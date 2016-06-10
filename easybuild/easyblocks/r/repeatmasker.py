@@ -25,7 +25,7 @@
 """
 EasyBlock for RepeatMasker
 
-@author: Ruben van Dijk (Rijksuniversiteit Groningen)
+@author: Ruben van Dijk (University of Groningen)
 """
 import os
 import shutil
@@ -33,48 +33,52 @@ import shutil
 from easybuild.framework.easyblock import EasyBlock
 from easybuild.easyblocks.generic.binary import PackedBinary
 from easybuild.tools.build_log import EasyBuildError
+from easybuild.tools.run import run_cmd
+from easybuild.tools.modules import get_software_root, get_software_version
 
 class EB_RepeatMasker(PackedBinary):
     """
     Support for building RepeatMasker
     """
-    
-    def configure_step(self):
-        """
-        No configure for Eigen.
-        """
-        pass
-
-    def build_step(self):
-        """
-        No build for Eigen.
-        """
-        pass
-    
-    
-class PackedBinary(Binary, EasyBlock):
-    """Support for installing packed binary software.
-    Just unpack the sources in the install dir
-    """
-
-    def extract_step(self):
-        """Unpack the source"""
-        EasyBlock.extract_step(self)
 
     def install_step(self):
         """Copy all unpacked source directories to install directory, one-by-one."""
-        try:
-            os.chdir(self.builddir)
-            for src in os.listdir(self.builddir):
-                srcpath = os.path.join(self.builddir, src)
-                if os.path.isdir(srcpath):
-                    # copy files to install dir via Binary
-                    self.cfg['start_dir'] = src
-                    Binary.install_step(self)
-                elif os.path.isfile(srcpath):
-                    shutil.copy2(srcpath, self.installdir)
-                else:
-                    raise EasyBuildError("Path %s is not a file nor a directory?", srcpath)
-        except OSError, err:
-            raise EasyBuildError("Failed to copy unpacked sources to install directory: %s", err)
+        super(EB_RepeatMaserk, self).install_step(self)
+        
+        
+    def post_install_step(self):
+        """Check an which search engine should be used for RepeatMasker"""
+        
+        
+        """Configure RepeatMasker"""
+        perl_path = "\n" + self.toolchain.get_variable('')
+        
+        '''' 
+        mpi_support = 'Y'
+        mpi_inc_dir = self.toolchain.get_variable('MPI_INC_DIR')
+        mpicc = os.path.join(mpi_inc_dir, '..', 'bin', 'mpicc')
+        mpih = os.path.join(mpi_inc_dir, 'mpi.h')
+        input = '\n'.join([mpi_support, mpicc, mpih])
+        input = 'N'
+
+        '''
+        
+        input += '\n'
+        run_cmd('./configure', inp=input)
+        run_cmd('perl Build install')
+
+ '''
+ # RepeatMasker has a configure that needs some input, if HMMER is preferred as search engine include HMMER as dependency and
+ # replace '2' with '4': 
+ postinstallcmds = [
+   "cd %(installdir)s && \
+    printf '\n\n\n\n%s\n%s\n\n%s\n' '2' $EBROOTRMBLAST '5' > conf.in && \
+    ./configure < conf.in && rm conf.in",
+'''
+
+
+
+
+
+
 
