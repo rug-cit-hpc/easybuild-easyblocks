@@ -31,7 +31,7 @@ import os
 import shutil
 
 from easybuild.framework.easyblock import EasyBlock
-from easybuild.easyblocks.generic.binary import PackedBinary
+from easybuild.easyblocks.generic.packedbinary import PackedBinary
 from easybuild.tools.build_log import EasyBuildError
 from easybuild.tools.run import run_cmd
 from easybuild.tools.modules import get_software_root, get_software_version
@@ -43,39 +43,52 @@ class EB_RepeatMasker(PackedBinary):
 
     def install_step(self):
         """Copy all unpacked source directories to install directory, one-by-one."""
-        super(EB_RepeatMaserk, self).install_step(self)
+        super(EB_RepeatMasker, self).install_step(self)
         
         
     def post_install_step(self):
         """Check an which search engine should be used for RepeatMasker"""
         
-        
-        """Configure RepeatMasker"""
-        perl_path = "\n" + self.toolchain.get_variable('')
-        
-        '''' 
-        mpi_support = 'Y'
-        mpi_inc_dir = self.toolchain.get_variable('MPI_INC_DIR')
-        mpicc = os.path.join(mpi_inc_dir, '..', 'bin', 'mpicc')
-        mpih = os.path.join(mpi_inc_dir, 'mpi.h')
-        input = '\n'.join([mpi_support, mpicc, mpih])
-        input = 'N'
+        # USE https://github.com/hpcugent/easybuild-easyblocks/blob/a5ca455fe34a2e3ff12d61849675f65b447f23e2/easybuild/easyblocks/x/xmipp.py
+        dep_names = [dep['name'] for dep in self.cfg['dependencies']]
+        for i in dep_names:
+            print i
 
-        '''
-        
-        input += '\n'
-        run_cmd('./configure', inp=input)
-        run_cmd('perl Build install')
+'''
+kijk of 1 van 4 er instaat
+hou rekening met meer dan 1, zet dan 1e op default.
 
- '''
- # RepeatMasker has a configure that needs some input, if HMMER is preferred as search engine include HMMER as dependency and
- # replace '2' with '4': 
- postinstallcmds = [
-   "cd %(installdir)s && \
-    printf '\n\n\n\n%s\n%s\n\n%s\n' '2' $EBROOTRMBLAST '5' > conf.in && \
-    ./configure < conf.in && rm conf.in",
+run_cmd_qa gebruiken.
 '''
 
+"""Configure RepeatMasker"""
+'''
+perl_path = "\n" + self.toolchain.get_variable('')
+
+ 
+mpi_support = 'Y'
+mpi_inc_dir = self.toolchain.get_variable('MPI_INC_DIR')
+mpicc = os.path.join(mpi_inc_dir, '..', 'bin', 'mpicc')
+mpih = os.path.join(mpi_inc_dir, 'mpi.h')
+input = '\n'.join([mpi_support, mpicc, mpih])
+input = 'N'
+
+'''
+'''
+input += '\n'
+run_cmd('./configure', inp=input)
+run_cmd('perl Build install')
+
+'''
+"""
+# RepeatMasker has a configure that needs some input, if HMMER is preferred as search engine include HMMER as dependency and
+# replace '2' with '4': 
+postinstallcmds = [
+"cd %(installdir)s && \
+printf '\n\n\n\n%s\n%s\n\n%s\n' '2' $EBROOTRMBLAST '5' > conf.in && \
+./configure < conf.in && rm conf.in",
+'''
+"""
 
 
 
