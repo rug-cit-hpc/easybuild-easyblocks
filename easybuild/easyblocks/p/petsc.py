@@ -90,6 +90,9 @@ class EB_PETSc(ConfigureMake):
                 self.cfg.update('configopts', '--CFLAGS="%s"' % os.getenv('CFLAGS'))
                 self.cfg.update('configopts', '--CXXFLAGS="%s"' % os.getenv('CXXFLAGS'))
                 self.cfg.update('configopts', '--FFLAGS="%s"' % os.getenv('F90FLAGS'))
+                # De twee regels hier zijn toegevoegd.
+                self.cfg.update('configopts', '--LIBS="%s -lrt" ' % os.getenv('LIBS'))
+                print str(os.getenv('LIBS'))
             else:
                 self.cfg.update('configopts', '--with-cflags="%s"' % os.getenv('CFLAGS'))
                 self.cfg.update('configopts', '--with-cxxflags="%s"' % os.getenv('CXXFLAGS'))
