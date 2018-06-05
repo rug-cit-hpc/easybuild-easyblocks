@@ -134,7 +134,7 @@ class EB_CPLEX(Binary):
     def sanity_check_step(self):
         """Custom sanity check for CPLEX"""
         custom_paths = {
-            'files':["%s/%s" % (self.bindir, x) for x in ["convert", "cplex", "cplexamp"]],
+            'files':["%s/%s" % (self.bindir, x) for x in ["cplex", "cplexamp"]],
             'dirs':[],
         }
         super(EB_CPLEX, self).sanity_check_step(custom_paths=custom_paths)
