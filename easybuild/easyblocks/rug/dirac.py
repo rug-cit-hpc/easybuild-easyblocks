@@ -53,7 +53,7 @@ class EB_DIRAC(CMakeMake):
                 raise EasyBuildError("Failed to remove existing install directory %s: %s", self.installdir, err)
 
         self.cfg['separate_build_dir'] = True
-        self.cfg.update('configopts', "-DENABLE_MPI=ON -DCMAKE_BUILD_TYPE=release -DMKL_FLAG=parallel")
+        self.cfg.update('configopts', "-DENABLE_MPI=ON -DCMAKE_BUILD_TYPE=release -DMKL_FLAG=sequential")
 #-DBoost_NO_BOOST_CMAKE=ON -DBoost_NO_SYSTEM_PATHS=ON")
 
         # complete configuration with configure_method of parent
